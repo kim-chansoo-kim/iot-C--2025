@@ -1,4 +1,4 @@
-/*DB연동*/
+/* C++ - DB연동 */
 #include <iostream>
 #include <mysql/jdbc.h>
 
@@ -7,20 +7,22 @@ using namespace sql;
 
 int main()
 {
-	try {
-		mysql::MySQL_Driver* driver;
-		Connection* con;
+	const string server = "tcp://127.0.0.1:3306";
+	const string username = "root";
+	const string password = "12345";
+	const string database = "testDB";
 
-		driver = mysql::get_mysql_driver_instance();
+	try
+	{
+		mysql::MySQL_Driver* driver = mysql::get_mysql_driver_instance();
+		unique_ptr<Connection> conn(driver->connect(server, username, password));
 
-		con = driver->connect("tcp://127.0.0.1:3306", "madang", "12345");
-		
-		con->setSchema("madang");
-
-		cout << "Connection successful!!" << endl;
+		conn->setSchema(database);
+		cout << "MySQL Connection Success" << endl;
 	}
-	catch (SQLException& e) {
-		cerr << "MySQL Connection failed!!" << e.what() << endl;
+	catch (SQLException& e)
+	{
+		cerr << "MySQL Connection Failed" << e.what() << endl;
 	}
 
 	return 0;
